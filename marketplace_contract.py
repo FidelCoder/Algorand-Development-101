@@ -45,3 +45,18 @@ class Product:
                 App.globalPut(self.Variables.sold,App.globalGet(self.Variables.sold) + Btoi(count)),
                 Approve()
             ])
+
+            return if(can_buy).Then(update_state).Else(Reject())
+        
+        #Deleting a Product
+        def application_deletion():
+            return Return(Txn.sender() == Global.creator_address())
+
+        def application_start(self):
+            return Cond(
+                [Txn.application_id() == Int(0), self.application_creation()],
+                [Txn.on_completion_args[0] == self.AppMethods.buy, self.buy()],
+                [Txn.application_args[0] == self.AppMethods.buy, self.buy()]
+            )
+        
+
